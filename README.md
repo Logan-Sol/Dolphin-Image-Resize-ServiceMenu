@@ -1,200 +1,187 @@
-Dolphin Image Resize ServiceMenu
+# Dolphin Image Resize ServiceMenu
 
-A simple KDE Dolphin ServiceMenu that adds image resizing options to the right-click context menu.
+A simple KDE Dolphin ServiceMenu that adds image resizing options to the **right-click context menu**.
 
 It uses ImageMagick to resize images by percentage without modifying the original file.
 
-Features
-Resize images directly from Dolphin's right-click context menu
-Supports common ImageMagick formats, including:
-PNG
-JPEG / JPG
-WebP
-TIFF
-BMP
-GIF
-Preset resize options:
-25%
-50%
-75%
-150%
-200%
-Original files are never overwritten
-Resized images are saved next to the original
-No kdialog or graphical popup is required
-Supports ImageMagick 7 (magick) and ImageMagick 6 (convert)
-Example
+## Features
 
-Right-click an image in Dolphin and select a resize option:
+- Resize images directly from Dolphin
+- Preset resize options:
+  - **25%**
+  - **50%**
+  - **75%**
+  - **150%**
+  - **200%**
+- Supports common image formats supported by ImageMagick:
+  - PNG
+  - JPEG / JPG
+  - WebP
+  - TIFF
+  - BMP
+  - GIF
+- Original images are never overwritten
+- Resized images are saved next to the original
+- Supports multiple selected images
+- No `kdialog` required
+- Works with ImageMagick 7 (`magick`) and ImageMagick 6 (`convert`)
+- No `sudo` required for normal operation
 
-Resize 25%
-Resize 50%
-Resize 75%
-Resize 150%
-Resize 200%
+## Requirements
 
+- KDE Dolphin
+- Bash
+- ImageMagick
 
-For example:
+### Debian / Ubuntu / KDE Neon
 
-photo.jpg
+Install ImageMagick:
 
+    sudo apt install imagemagick
 
-Choosing Resize 50% creates:
+## Installation
 
-photo_50pct.jpg
+Clone the repository:
 
+    git clone https://github.com/YOUR-USERNAME/dolphin-image-resize.git
+    cd dolphin-image-resize
 
-The original image remains unchanged.
+Make the installer executable:
 
-Requirements
-KDE Dolphin
-Bash
-ImageMagick
-Debian / Ubuntu / KDE Neon
+    chmod +x image_context_menu.sh
 
-Install ImageMagick with:
+Run it:
 
-sudo apt install imagemagick
+    ./image_context_menu.sh
 
-Installation
+The installer creates:
 
-Download image_context_menu.sh, make it executable, and run it:
-
-chmod +x image_context_menu.sh
-./image_context_menu.sh
-
-
-The script creates the following files:
-
-~/.local/share/kio/servicemenus/Resize-Image.desktop
-~/.local/share/dolphin-scripts/resize-image.sh
-
+    ~/.local/share/kio/servicemenus/Resize-Image.desktop
+    ~/.local/share/dolphin-scripts/resize-image.sh
 
 Dolphin is automatically restarted after installation.
 
-Usage
+## Usage
 
-After installation:
+1. Open **Dolphin**.
+2. Right-click an image.
+3. Select the desired resize percentage.
+4. The resized image is created in the same directory.
 
-Open Dolphin.
-Right-click an image.
-Choose the desired resize percentage.
-The resized image is created in the same directory.
+Available options:
+
+- Resize 25%
+- Resize 50%
+- Resize 75%
+- Resize 150%
+- Resize 200%
+
+## Example
+
+Original:
+
+    photo.jpg
+
+After selecting **Resize 50%**:
+
+    photo_50pct.jpg
+
+The original `photo.jpg` remains unchanged.
+
+### Multiple Images
+
+Select multiple images in Dolphin and choose a resize option.
 
 For example:
 
-vacation.png
+    photo1.jpg
+    photo2.jpg
+    drawing.png
 
+After selecting **Resize 50%**:
 
-after selecting Resize 50% becomes:
+    photo1_50pct.jpg
+    photo2_50pct.jpg
+    drawing_50pct.png
 
-vacation_50pct.png
+## How It Works
 
+The `image_context_menu.sh` script installs two files into your local KDE configuration:
 
-The original vacation.png is not modified.
+    ~/.local/share/kio/servicemenus/Resize-Image.desktop
+    ~/.local/share/dolphin-scripts/resize-image.sh
 
-Uninstallation
+`Resize-Image.desktop` adds the resize actions to Dolphin's right-click context menu.
 
-Remove the installed ServiceMenu and script:
+`resize-image.sh` performs the actual image resizing using ImageMagick.
 
-rm -f ~/.local/share/kio/servicemenus/Resize-Image.desktop
-rm -f ~/.local/share/dolphin-scripts/resize-image.sh
+For ImageMagick 7, it uses:
 
+    magick "$file" -resize "${percent}%" "$output"
+
+For older ImageMagick installations, it uses:
+
+    convert "$file" -resize "${percent}%" "$output"
+
+## Output Files
+
+The original file is never overwritten.
+
+The resized file gets the percentage added to its filename:
+
+    original.jpg
+    original_25pct.jpg
+    original_50pct.jpg
+    original_75pct.jpg
+    original_150pct.jpg
+    original_200pct.jpg
+
+## Uninstallation
+
+Remove the installed ServiceMenu and resize script:
+
+    rm -f ~/.local/share/kio/servicemenus/Resize-Image.desktop
+    rm -f ~/.local/share/dolphin-scripts/resize-image.sh
 
 Then restart Dolphin:
 
-killall dolphin 2>/dev/null
-dolphin &
+    killall dolphin 2>/dev/null
+    dolphin &
 
-How It Works
+## Repository Structure
 
-image_context_menu.sh installs a KDE Dolphin ServiceMenu and a small resize script.
+    dolphin-image-resize/
+    ├── README.md
+    └── image_context_menu.sh
 
-The ServiceMenu defines the available resize actions:
+The installer creates the required Dolphin ServiceMenu and resize script automatically.
 
-25%
-50%
-75%
-150%
-200%
+## Notes
 
+This project is intended for normal image resizing. ImageMagick determines the exact behavior for individual image formats.
 
-When an action is selected, Dolphin passes the selected image file(s) to:
+Animated images and multi-page image formats may have format-specific behavior.
 
-~/.local/share/dolphin-scripts/resize-image.sh
-
-
-The script uses ImageMagick to perform the resize.
-
-ImageMagick 7:
-
-magick "$file" -resize "${percent}%" "$output"
-
-
-ImageMagick 6:
-
-convert "$file" -resize "${percent}%" "$output"
-
-Multiple Images
-
-Multiple images can be selected in Dolphin and resized together.
-
-Each image receives a new filename based on the selected percentage.
-
-For example:
-
-photo1.jpg
-photo2.jpg
-photo3.png
-
-
-with Resize 50% produces:
-
-photo1_50pct.jpg
-photo2_50pct.jpg
-photo3_50pct.png
-
-Safety
-
-The script does not require sudo during normal operation.
-
-It does not overwrite the original images.
-
-The resized files are created in the same directory as the originals.
-
-No files are downloaded and no network connection is required.
-
-Files
-
-The repository contains:
-
-dolphin-image-resize/
-├── README.md
-└── image_context_menu.sh
-
-
-Running image_context_menu.sh creates the required Dolphin ServiceMenu and resize script automatically.
-
-License
+## License
 
 MIT License
 
 Copyright (c) 2026
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files, to deal in the Software
-without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-and to permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
