@@ -1,10 +1,12 @@
 Dolphin Image Resize ServiceMenu
 
-A simple KDE Dolphin ServiceMenu for resizing images directly from the file manager's right-click context menu.
+A simple KDE Dolphin ServiceMenu that adds image resizing options to the right-click context menu.
+
+It uses ImageMagick to resize images by percentage without modifying the original file.
 
 Features
-Resize images directly from Dolphin.
-Supports common ImageMagick formats including:
+Resize images directly from Dolphin's right-click context menu
+Supports common ImageMagick formats, including:
 PNG
 JPEG / JPG
 WebP
@@ -17,13 +19,13 @@ Preset resize options:
 75%
 150%
 200%
-Original files are never overwritten.
-Resized files are saved next to the original.
-No kdialog or graphical popup is required.
-Works with ImageMagick 6 (convert) and ImageMagick 7 (magick).
+Original files are never overwritten
+Resized images are saved next to the original
+No kdialog or graphical popup is required
+Supports ImageMagick 7 (magick) and ImageMagick 6 (convert)
 Example
 
-Right-click an image in Dolphin:
+Right-click an image in Dolphin and select a resize option:
 
 Resize 25%
 Resize 50%
@@ -42,13 +44,16 @@ Choosing Resize 50% creates:
 photo_50pct.jpg
 
 
-The original remains unchanged.
+The original image remains unchanged.
 
 Requirements
 KDE Dolphin
 Bash
 ImageMagick
 Debian / Ubuntu / KDE Neon
+
+Install ImageMagick with:
+
 sudo apt install imagemagick
 
 Installation
@@ -59,17 +64,38 @@ chmod +x image_context_menu.sh
 ./image_context_menu.sh
 
 
-The installer creates:
+The script creates the following files:
 
 ~/.local/share/kio/servicemenus/Resize-Image.desktop
 ~/.local/share/dolphin-scripts/resize-image.sh
 
 
-Dolphin is restarted automatically after installation.
+Dolphin is automatically restarted after installation.
+
+Usage
+
+After installation:
+
+Open Dolphin.
+Right-click an image.
+Choose the desired resize percentage.
+The resized image is created in the same directory.
+
+For example:
+
+vacation.png
+
+
+after selecting Resize 50% becomes:
+
+vacation_50pct.png
+
+
+The original vacation.png is not modified.
 
 Uninstallation
 
-Remove the installed files with:
+Remove the installed ServiceMenu and script:
 
 rm -f ~/.local/share/kio/servicemenus/Resize-Image.desktop
 rm -f ~/.local/share/dolphin-scripts/resize-image.sh
@@ -82,28 +108,72 @@ dolphin &
 
 How It Works
 
-The Dolphin ServiceMenu passes the selected image files to resize-image.sh together with the requested percentage.
+image_context_menu.sh installs a KDE Dolphin ServiceMenu and a small resize script.
 
-ImageMagick performs the resize:
+The ServiceMenu defines the available resize actions:
+
+25%
+50%
+75%
+150%
+200%
+
+
+When an action is selected, Dolphin passes the selected image file(s) to:
+
+~/.local/share/dolphin-scripts/resize-image.sh
+
+
+The script uses ImageMagick to perform the resize.
+
+ImageMagick 7:
 
 magick "$file" -resize "${percent}%" "$output"
 
 
-or, on older ImageMagick installations:
+ImageMagick 6:
 
 convert "$file" -resize "${percent}%" "$output"
 
+Multiple Images
 
-The output filename is generated automatically:
+Multiple images can be selected in Dolphin and resized together.
 
-original.jpg
-→ original_50pct.jpg
+Each image receives a new filename based on the selected percentage.
+
+For example:
+
+photo1.jpg
+photo2.jpg
+photo3.png
+
+
+with Resize 50% produces:
+
+photo1_50pct.jpg
+photo2_50pct.jpg
+photo3_50pct.png
 
 Safety
 
-The tool does not require sudo during normal operation and does not modify the original image.
+The script does not require sudo during normal operation.
 
-It only creates files inside the same directory as the selected image.
+It does not overwrite the original images.
+
+The resized files are created in the same directory as the originals.
+
+No files are downloaded and no network connection is required.
+
+Files
+
+The repository contains:
+
+dolphin-image-resize/
+├── README.md
+└── image_context_menu.sh
+
+
+Running image_context_menu.sh creates the required Dolphin ServiceMenu and resize script automatically.
 
 License
 
@@ -115,8 +185,8 @@ Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files, to deal in the Software
 without restriction, including without limitation the rights to use, copy,
 modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-and to permit persons to whom the Software is furnished to do so, subject to the
-following conditions:
+and to permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
