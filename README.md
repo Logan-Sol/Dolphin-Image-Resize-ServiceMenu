@@ -44,7 +44,7 @@ Install ImageMagick:
 Clone the repository:
 
     git clone https://github.com/Logan-Sol/Dolphin-Image-Resize-ServiceMenu.git
-    cd dolphin-image-resize
+    cd Dolphin-Image-Resize-ServiceMenu/
 
 Make the installer executable:
 
