@@ -19,6 +19,7 @@ It uses ImageMagick to resize images by percentage without modifying the origina
   - WebP
   - TIFF
   - BMP
+  - HEIF (.heic)
   - GIF
 - Original images are never overwritten
 - Resized images are saved next to the original
